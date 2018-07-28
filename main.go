@@ -31,6 +31,7 @@ func main() {
 
 	router := httprouter.New()
 	router.GET("/api/v1/sources", h.GetSources)
+	router.GET("/api/v1/sources/:id", h.GetSourceByID)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
