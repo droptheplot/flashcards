@@ -1,22 +1,13 @@
 package handlers
 
 import (
-	"fmt"
-	"net/http"
-
-	"github.com/julienschmidt/httprouter"
+	"github.com/droptheplot/flashcards/repositories/flashcards"
 )
 
-type Repo interface {
-	Ping() string
+type Repository interface {
+	GetSources() ([]flashcards.Source, error)
 }
 
 type Handler struct {
-	Repo Repo
-}
-
-func (h *Handler) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	p := h.Repo.Ping()
-
-	fmt.Fprint(w, p)
+	Repository Repository
 }

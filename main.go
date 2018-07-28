@@ -21,16 +21,16 @@ func main() {
 
 	defer db.Close()
 
-	r := flashcards.Repo{
+	f := flashcards.Repository{
 		DB: db,
 	}
 
 	h := handlers.Handler{
-		Repo: &r,
+		Repository: &f,
 	}
 
 	router := httprouter.New()
-	router.GET("/", h.Index)
+	router.GET("/api/v1/sources", h.GetSources)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
