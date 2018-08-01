@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) GetSources(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	sources, _ := h.Repository.GetSources()
+	sources, _ := h.DBRepository.GetSources()
 
 	js, err := json.Marshal(sources)
 
@@ -30,14 +30,14 @@ func (h *Handler) GetSourceByID(w http.ResponseWriter, r *http.Request, params h
 		return
 	}
 
-	source, err := h.Repository.GetSourceByID(ID)
+	source, err := h.DBRepository.GetSourceByID(ID)
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	cards, _ := h.Repository.GetCardsBySourceID(ID)
+	cards, _ := h.DBRepository.GetCardsBySourceID(ID)
 
 	source.Cards = cards
 

@@ -1,4 +1,4 @@
-package flashcards
+package db
 
 import (
 	"github.com/jmoiron/sqlx"

@@ -1,4 +1,4 @@
-package flashcards
+package db
 
 type Source struct {
 	ID    int    `db:"id" json:"id"`

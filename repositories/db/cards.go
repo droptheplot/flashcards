@@ -1,4 +1,4 @@
-package flashcards
+package db
 
 type Card struct {
 	ID      int    `db:"id" json:"id"`
@@ -11,8 +11,8 @@ func (r *Repository) GetCardsBySourceID(ID int) ([]Card, error) {
 	err := r.DB.Select(&cards, `
 		SELECT cards.id, cards.content FROM cards
 		INNER JOIN cards_sources
-			ON cards.id = cards_sources.card_id
-			AND cards_sources.source_id = $1
+						ON cards.id = cards_sources.card_id
+					 AND cards_sources.source_id = $1
 		ORDER BY cards.id DESC;
 	`, ID)
 
