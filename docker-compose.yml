@@ -7,13 +7,14 @@ services:
     networks:
       - default-network
     depends_on:
-      - db
+      - postgres
+      - redis
     command: fresh
     ports:
       - "8080:8080"
     env_file:
       - .env
-  db:
+  postgres:
     image: postgres
     restart: always
     environment:

@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	pg, err := sqlx.Open("postgres", os.Getenv("DB"))
+	pg, err := sqlx.Open("postgres", os.Getenv("POSTGRES"))
 
 	if err != nil {
 		log.Fatal(err)
