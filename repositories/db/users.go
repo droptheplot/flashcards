@@ -1,10 +1,6 @@
 package db
 
-type User struct {
-	ID       int    `db:"id" json:"id"`
-	Email    string `db:"email" json:"email"`
-	Password string `db:"password" json:"-"`
-}
+import "github.com/droptheplot/flashcards/entities"
 
 func (r *Repository) CreateUser(email string, password string) error {
 	_, err := r.DB.Exec("INSERT INTO users (email, password) VALUES ($1, $2)", email, password)
@@ -12,8 +8,8 @@ func (r *Repository) CreateUser(email string, password string) error {
 	return err
 }
 
-func (r *Repository) GetUserByEmail(email string) (User, error) {
-	user := User{}
+func (r *Repository) GetUserByEmail(email string) (entities.User, error) {
+	user := entities.User{}
 
 	err := r.DB.Get(&user, "SELECT * FROM users WHERE email = $1 LIMIT 1", email)
 

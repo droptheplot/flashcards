@@ -1,12 +1,9 @@
 package db
 
-type Card struct {
-	ID      int    `db:"id" json:"id"`
-	Content string `db:"content" json:"content"`
-}
+import "github.com/droptheplot/flashcards/entities"
 
-func (r *Repository) GetCardsBySourceID(ID int) ([]Card, error) {
-	cards := []Card{}
+func (r *Repository) GetCardsBySourceID(ID int) ([]entities.Card, error) {
+	cards := []entities.Card{}
 
 	err := r.DB.Select(&cards, `
 		SELECT cards.id, cards.content FROM cards

@@ -1,12 +1,12 @@
 package handlers
 
-import "github.com/droptheplot/flashcards/repositories/db"
+import "github.com/droptheplot/flashcards/entities"
 
 type DBRepository interface {
-	GetSources() ([]db.Source, error)
-	GetSourceByID(ID int) (db.Source, error)
-	GetCardsBySourceID(ID int) ([]db.Card, error)
-	GetUserByEmail(email string) (db.User, error)
+	GetSources() ([]entities.Source, error)
+	GetSourceByID(ID int) (entities.Source, error)
+	GetCardsBySourceID(ID int) ([]entities.Card, error)
+	GetUserByEmail(email string) (entities.User, error)
 	CreateUser(email string, password string) error
 }
 
