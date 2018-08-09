@@ -5,7 +5,7 @@ import "github.com/droptheplot/flashcards/entities"
 func (r *Repository) GetCardsBySourceID(ID int) ([]entities.Card, error) {
 	cards := []entities.Card{}
 
-	err := r.DB.Select(&cards, `
+	err := r.Client.Select(&cards, `
 		SELECT cards.id, cards.content FROM cards
 		INNER JOIN cards_sources
 						ON cards.id = cards_sources.card_id

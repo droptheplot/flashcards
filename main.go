@@ -35,8 +35,8 @@ func main() {
 
 	defer rdc.Close()
 
-	dbr := db.Repository{DB: pgc}
-	kvr := kv.Repository{DB: rdc}
+	dbr := db.Repository{Client: pgc}
+	kvr := kv.Repository{Client: rdc}
 
 	rd := render.New()
 

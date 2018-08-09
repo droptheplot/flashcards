@@ -13,5 +13,5 @@ const (
 func (r *Repository) CreateToken(token string, userID int) error {
 	k := fmt.Sprintf(tokenKeyFormat, userID)
 
-	return r.DB.Set(k, token, tokenExpiration).Err()
+	return r.Client.Set(k, token, tokenExpiration).Err()
 }

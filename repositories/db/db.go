@@ -5,5 +5,5 @@ import (
 )
 
 type Repository struct {
-	DB *sqlx.DB
+	Client *sqlx.DB
 }
