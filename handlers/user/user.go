@@ -1,7 +1,7 @@
 package user
 
 import (
-	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -13,8 +13,13 @@ type UseCase interface {
 	CreateToken(email string, password string) (string, error)
 }
 
+type Render interface {
+	JSON(w io.Writer, status int, v interface{}) error
+}
+
 type Handler struct {
 	UseCase UseCase
+	Render  Render
 }
 
 type CreateUserParams struct {
@@ -88,13 +93,5 @@ func (h *Handler) CreateToken(w http.ResponseWriter, r *http.Request, _ httprout
 		return
 	}
 
-	js, err := json.Marshal(CreateTokenResponse{Token: token})
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	h.Render.JSON(w, http.StatusOK, CreateTokenResponse{Token: token})
 }

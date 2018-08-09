@@ -1,7 +1,7 @@
 package source
 
 import (
-	"encoding/json"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -14,22 +14,19 @@ type UseCase interface {
 	GetSourceByID(ID int) (entities.Source, error)
 }
 
+type Render interface {
+	JSON(w io.Writer, status int, v interface{}) error
+}
+
 type Handler struct {
 	UseCase UseCase
+	Render  Render
 }
 
 func (h *Handler) GetSources(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	sources, _ := h.UseCase.GetSources()
 
-	js, err := json.Marshal(sources)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	h.Render.JSON(w, http.StatusOK, sources)
 }
 
 func (h *Handler) GetSourceByID(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -47,13 +44,5 @@ func (h *Handler) GetSourceByID(w http.ResponseWriter, r *http.Request, params h
 		return
 	}
 
-	js, err := json.Marshal(source)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	h.Render.JSON(w, http.StatusOK, source)
 }

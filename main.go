@@ -15,39 +15,44 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
+	"github.com/unrolled/render"
 )
 
 func main() {
-	pg, err := sqlx.Open("postgres", os.Getenv("POSTGRES"))
+	pgc, err := sqlx.Open("postgres", os.Getenv("POSTGRES"))
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer pg.Close()
+	defer pgc.Close()
 
-	rd := redis.NewClient(&redis.Options{
+	rdc := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_HOST"),
 		Password: os.Getenv("REDIS_PASSWORD"),
 		DB:       0,
 	})
 
-	defer rd.Close()
+	defer rdc.Close()
 
-	dbr := db.Repository{DB: pg}
-	kvr := kv.Repository{DB: rd}
+	dbr := db.Repository{DB: pgc}
+	kvr := kv.Repository{DB: rdc}
+
+	rd := render.New()
 
 	uh := userHandler.Handler{
 		UseCase: &userUseCase.UseCase{
 			DBRepository: &dbr,
 			KVRepository: &kvr,
 		},
+		Render: rd,
 	}
 
 	sh := sourceHandler.Handler{
 		UseCase: &sourceUseCase.UseCase{
 			DBRepository: &dbr,
 		},
+		Render: rd,
 	}
 
 	router := httprouter.New()
