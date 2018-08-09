@@ -1,15 +1,25 @@
-package handlers
+package source
 
 import (
 	"encoding/json"
 	"net/http"
 	"strconv"
 
+	"github.com/droptheplot/flashcards/entities"
 	"github.com/julienschmidt/httprouter"
 )
 
+type UseCase interface {
+	GetSources() ([]entities.Source, error)
+	GetSourceByID(ID int) (entities.Source, error)
+}
+
+type Handler struct {
+	UseCase UseCase
+}
+
 func (h *Handler) GetSources(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	sources, _ := h.DBRepository.GetSources()
+	sources, _ := h.UseCase.GetSources()
 
 	js, err := json.Marshal(sources)
 
@@ -30,16 +40,12 @@ func (h *Handler) GetSourceByID(w http.ResponseWriter, r *http.Request, params h
 		return
 	}
 
-	source, err := h.DBRepository.GetSourceByID(ID)
+	source, err := h.UseCase.GetSourceByID(ID)
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-
-	cards, _ := h.DBRepository.GetCardsBySourceID(ID)
-
-	source.Cards = cards
 
 	js, err := json.Marshal(source)
 

@@ -1,13 +1,21 @@
-package handlers
+package user
 
 import (
 	"encoding/json"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/droptheplot/flashcards/auth"
 	"github.com/julienschmidt/httprouter"
 )
+
+type UseCase interface {
+	CreateUser(email string, password string) error
+	CreateToken(email string, password string) (string, error)
+}
+
+type Handler struct {
+	UseCase UseCase
+}
 
 type CreateUserParams struct {
 	Email    string `valid:"required,email"`
@@ -43,9 +51,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request, _ httproute
 		return
 	}
 
-	signUpUserParams.Password = auth.HashPassword(signUpUserParams.Password)
-
-	err = h.DBRepository.CreateUser(signUpUserParams.Email, signUpUserParams.Password)
+	err = h.UseCase.CreateUser(signUpUserParams.Email, signUpUserParams.Password)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -75,26 +81,7 @@ func (h *Handler) CreateToken(w http.ResponseWriter, r *http.Request, _ httprout
 		return
 	}
 
-	user, err := h.DBRepository.GetUserByEmail(createTokenParams.Email)
-
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	if user.Password != auth.HashPassword(createTokenParams.Password) {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	token, err := auth.GenerateToken()
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	err = h.KVRepository.CreateToken(token, user.ID)
+	token, err := h.UseCase.CreateToken(createTokenParams.Email, createTokenParams.Password)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
