@@ -63,5 +63,13 @@ func main() {
 	router.POST("/api/v1/users", uh.CreateUser)
 	router.POST("/api/v1/tokens", uh.CreateToken)
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8080", withLogger(router)))
+}
+
+func withLogger(router http.Handler) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s %s\n", r.Method, r.URL.Path)
+
+		router.ServeHTTP(w, r)
+	})
 }
