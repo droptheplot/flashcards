@@ -18,6 +18,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/unrolled/render"
 )
 
@@ -77,6 +78,8 @@ func main() {
 
 	router.POST("/api/v1/users", uh.CreateUser)
 	router.POST("/api/v1/tokens", uh.CreateToken)
+
+	router.Handler("GET", "/metrics", promhttp.Handler())
 
 	log.Fatal(http.ListenAndServe(":8080", middlewares.WithLogger(router)))
 }
