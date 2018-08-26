@@ -33,5 +33,25 @@ services:
       - "6379:6379"
     networks:
       - default-network
+  # prometheus:
+    # image: prom/prometheus
+    # expose:
+      # - "9090"
+    # ports:
+      # - "9090:9090"
+    # volumes:
+      # - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    # networks:
+      # - default-network
+  # grafana:
+    # image: grafana/grafana:latest
+    # ports:
+      # - "3000:3000"
+    # depends_on:
+      # - prometheus
+    # networks:
+      # - default-network
+    # volumes:
+      # - ./grafana:/var/lib/grafana
 networks:
   default-network:
